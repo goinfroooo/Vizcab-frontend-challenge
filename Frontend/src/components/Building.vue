@@ -30,29 +30,25 @@ const building_displayed = ref<BuildingInterface | null>(null)
 //const BuildingSaved = BuildingStore();
 
 onMounted(() => {
+  const route = useRoute();
+  const BuildingId: number = parseInt(route.params.id as string, 10); // Conversion de l'id en nombre
+  console.log(BuildingId);
 
-    const route = useRoute();
-    const BuildingId:number = route.params.id as unknown as number; 
-    console.log(BuildingId);
-    const BuildingLocal = localStorage.getItem("buildings");
-    if (BuildingLocal) {
-        const BuildingSaved:BuildingInterface[] = JSON.parse(BuildingLocal);
-        console.log(BuildingSaved);
-        for (let building in BuildingSaved) {
-            console.log(building);
-            if (building.id === BuildingId){
-                building_displayed.value = building;
-                return 0;
-            }
-        }
-    }
-    else {
-        throw new Error("No buildings in localstorage");
-    }
+  const BuildingLocal = localStorage.getItem("buildings");
+  if (BuildingLocal) {
+    const BuildingSaved: BuildingInterface[] = JSON.parse(BuildingLocal);
+    console.log(BuildingSaved);
 
-    
-    throw new Error("Building inexistant dans le store");
-})
+    const building = BuildingSaved.find(b => b.id === BuildingId);
+    if (building) {
+      building_displayed.value = building;
+    } else {
+      console.error("Building inexistant dans le store");
+    }
+  } else {
+    console.error("No buildings in localstorage");
+  }
+});
 
 </script>
 
